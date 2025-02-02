@@ -12,10 +12,22 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  issue_comment:
+    types: [created]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+  pr-comment-job:
+    if: >
+      github.event.issue.pull_request != null &&
+      startsWith(github.event.comment.body, '/deploy')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run deployment script
+        run: echo "Deployment triggered by PR comment!"  
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
